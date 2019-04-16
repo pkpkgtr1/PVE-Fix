@@ -1,0 +1,16 @@
+		  value: ''
+},
+{
+		itemId: 'thermal',
+		colspan: 2,
+		printBar: false,
+		title: gettext('CPU Thermal State'),
+		textField: 'thermalstate',
+		renderer:function(value){
+			const c0 = value.match(/Core 0.*?\+([\d\.]+)Â/)[1];
+			const c1 = value.match(/Core 1.*?\+([\d\.]+)Â/)[1];
+			const c2 = value.match(/Core 2.*?\+([\d\.]+)Â/)[1];
+			const c3 = value.match(/Core 3.*?\+([\d\.]+)Â/)[1];
+			return `Core 0: ${c0} ℃ | Core 1: ${c1} ℃ | Core 2: ${c2} ℃ | Core 3: ${c3} ℃`
+		   }
+	}

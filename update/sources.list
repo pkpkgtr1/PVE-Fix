@@ -1,0 +1,6 @@
+deb http://ftp.debian.org/debian stretch main contrib
+
+deb http://ftp.debian.org/debian stretch-updates main contrib
+
+# security updates
+deb http://security.debian.org stretch/updates main contrib
