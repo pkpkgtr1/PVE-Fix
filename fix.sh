@@ -3,7 +3,7 @@
 echo 
 echo 
 echo 1.去除登录时订阅提示
-echo 2.修复PVE6.x 没有购买订阅更新问题
+echo 2.修复PVE6.x 没有购买订阅,无法更新问题
 echo 3.添加cpu温度显示
 echo
 echo
