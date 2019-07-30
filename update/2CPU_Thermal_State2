@@ -1,0 +1,25 @@
+ value: ''
+},
+   {
+       itemId: 'hddtemp',
+       colspan: 2,
+       printBar: false,
+       title: gettext('HDDTemp'),
+       textField: 'hddstat',
+       renderer:function(value){
+            const sda = value.match(/.sda\|[\w\s\-]*\|([\d]+)?/)[1];
+            return `sda: ${sda} ℃ `
+		}
+ },
+   {
+	itemId: 'thermal',
+	colspan: 2,
+	printBar: false,
+	title: gettext('CPU Thermal State'),
+	textField: 'thermalstate',
+	renderer:function(value){
+		const c0 = value.match(/Core 0.*?\+([\d\.]+)Â/)[1];
+		const c1 = value.match(/Core 1.*?\+([\d\.]+)Â/)[1];
+		return `Core 0: ${c0} ℃ | Core 1: ${c1} ℃ `
+		  }
+}
