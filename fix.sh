@@ -6,7 +6,7 @@ echo 1.去除登录时订阅提示
 echo 2.修复PVE6.x 没有购买订阅,无法更新问题
 echo 3.添加cpu温度/硬盘温度显示（只有一块硬盘）
 echo 4.添加cpu温度/硬盘温度显示（有两块硬盘）
-echo
+echo 5.添加硬盘温度插件自启动
 echo
 read -p "请选择:" M
 echo 
@@ -257,9 +257,50 @@ else
     systemctl restart pveproxy
 fi
 
+
+
 else
 echo 您的cpu不在支持范围请联系作者
 fi
+
+elif [ "$M" = "5" ]
+then
+#脚本提示
+echo 正在创建开机启动
+cat > /etc/systemd/system/rc-local.service <<EOF
+[Unit]
+Description=/etc/rc.local
+ConditionPathExists=/etc/rc.local 
+[Service]
+Type=forking
+ExecStart=/etc/rc.local start
+TimeoutSec=0
+StandardOutput=tty
+RemainAfterExit=yes
+SysVStartPriority=99 
+[Install]
+WantedBy=multi-user.target
+EOF
+
+
+cat > /etc/rc.local <<EOF
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing. 
+hddtemp -d /dev/sd?
+exit 0
+EOF
+
+chmod +x /etc/rc.local&systemctl enable rc-local&systemctl start rc-local.service
 
 #-----------------------------------------------------------------------------------
 
