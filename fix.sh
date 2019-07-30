@@ -266,7 +266,7 @@ fi
 elif [ "$M" = "5" ]
 then
 #脚本提示
-echo 正在创建开机启动
+echo 已创建开机启动
 cat > /etc/systemd/system/rc-local.service <<EOF
 [Unit]
 Description=/etc/rc.local
