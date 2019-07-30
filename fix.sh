@@ -193,7 +193,7 @@ cat >> /etc/rc.local <<EOF
 hddtemp -d /dev/sd?
 exit 0
 EOF
-
+echo 自启动添加完毕 
 
 fi
 else
@@ -333,6 +333,7 @@ cat >> /etc/rc.local <<EOF
 hddtemp -d /dev/sd?
 exit 0
 EOF
+echo 自启动添加完毕 
 fi
 
 
