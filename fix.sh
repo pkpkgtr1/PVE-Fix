@@ -4,7 +4,8 @@ echo
 echo 
 echo 1.去除登录时订阅提示
 echo 2.修复PVE6.x 没有购买订阅,无法更新问题
-echo 3.添加cpu温度显示
+echo 3.添加cpu温度/硬盘温度显示（只有一块硬盘）
+echo 4.添加cpu温度/硬盘温度显示（有两块硬盘）
 echo
 echo
 read -p "请选择:" M
@@ -62,19 +63,34 @@ echo 已修复完成升级一下试试吧
 
 elif [ "$M" = "3" ]
 then
-
 #pve添加cpu温度显示
 #----------------------------------------------------------------------------------
-apt-get install lm-sensors
-#判断Api接口是否存在
+apt update
+apt-get install lm-sensors hddtemp
 grep -q "thermalstate" /usr/share/perl5/PVE/API2/Nodes.pm
 if [ $? -eq 0 ]; then
-
-    echo Api已存在无需更新 
-
+    echo thermalstate_Api已存在无需更新 
 else
     sed -i.bak '/res->{ksm} = /i\        $res->{thermalstate} = `sensors`;' /usr/share/perl5/PVE/API2/Nodes.pm
     echo 文件已更新
+fi
+grep -q "hddtemp" /usr/share/perl5/PVE/API2/Nodes.pm
+if [ $? -eq 0 ]; then
+    echo hddtemp_Api已存在无需更新 
+else
+    sed -i.bak "/res->{ksm} = /i\        my @hddtemp = ('nc localhost 7634');" /usr/share/perl5/PVE/API2/Nodes.pm
+    sed -i.bak '/res->{ksm} = /i\        $res->{hddstat} = `@hddtemp`;' /usr/share/perl5/PVE/API2/Nodes.pm
+    echo 文件已更新
+fi
+hddtemp -d /dev/sd?
+cp /usr/share/pve-manager/js/pvemanagerlib.js /usr/share/pve-manager/js/pvemanagerlib.js.backup
+
+grep -q "minHeight: 340" /usr/share/pve-manager/js/pvemanagerlib.js
+if [ $? -eq 0 ]; then
+    echo 无需修改高度 
+else
+    sed -i 's/minHeight: 320,/minHeight: 340,/' /usr/share/pve-manager/js/pvemanagerlib.js
+    echo 高度已更新
 fi
 #判断JS文件是否存在
 #!/bin/sh
@@ -145,10 +161,104 @@ echo 您的cpu不在支持范围请联系作者
 fi
 
 
+elif [ "$M" = "4" ]
+then
+#pve添加cpu温度显示2
+#----------------------------------------------------------------------------------
+apt update
+apt-get install lm-sensors hddtemp
+grep -q "thermalstate" /usr/share/perl5/PVE/API2/Nodes.pm
+if [ $? -eq 0 ]; then
+    echo thermalstate_Api已存在无需更新 
+else
+    sed -i.bak '/res->{ksm} = /i\        $res->{thermalstate} = `sensors`;' /usr/share/perl5/PVE/API2/Nodes.pm
+    echo 文件已更新
+fi
+grep -q "hddtemp" /usr/share/perl5/PVE/API2/Nodes.pm
+if [ $? -eq 0 ]; then
+    echo hddtemp_Api已存在无需更新 
+else
+    sed -i.bak "/res->{ksm} = /i\        my @hddtemp = ('nc localhost 7634');" /usr/share/perl5/PVE/API2/Nodes.pm
+    sed -i.bak '/res->{ksm} = /i\        $res->{hddstat} = `@hddtemp`;' /usr/share/perl5/PVE/API2/Nodes.pm
+    echo 文件已更新
+fi
+hddtemp -d /dev/sd?
+cp /usr/share/pve-manager/js/pvemanagerlib.js /usr/share/pve-manager/js/pvemanagerlib.js.backup
 
-
-
-
+grep -q "minHeight: 340" /usr/share/pve-manager/js/pvemanagerlib.js
+if [ $? -eq 0 ]; then
+    echo 无需修改高度 
+else
+    sed -i 's/minHeight: 320,/minHeight: 340,/' /usr/share/pve-manager/js/pvemanagerlib.js
+    echo 高度已更新
+fi
+#判断JS文件是否存在
+#!/bin/sh
+cpucores=`cat /proc/cpuinfo | grep "cpu cores" | uniq | awk -F: '{print $2}'|awk '{print int($0)}'`
+if [ "$cpucores" = 1 ]
+then 
+grep -q "CPU Thermal State" /usr/share/pve-manager/js/pvemanagerlib.js
+if [ $? -eq 0 ]; then
+    echo CPU为单核
+    echo CPU温度代码已存在无需更新 
+else
+    rm -rf CPU_Thermal_State
+    ping 127.0.0.1 -c 1 > /dev/null
+    wget -q --no-check-certificate https://raw.githubusercontent.com/pkpkgtr1/PVE-Fix/master/update/2CPU_Thermal_State
+    chmod -R 0755 CPU_Thermal_State
+    sed -i -e '/pveversion/{n;d}' /usr/share/pve-manager/js/pvemanagerlib.js
+    ping 127.0.0.1 -c 1 > /dev/null
+    sed -i -e '/pveversion/{n;d}' /usr/share/pve-manager/js/pvemanagerlib.js
+    ping 127.0.0.1 -c 1 > /dev/null
+    sed -i.bak '/pveversion/r CPU_Thermal_State' /usr/share/pve-manager/js/pvemanagerlib.js
+    echo cpu单核文件已更新   
+    echo 正在重启完毕
+    systemctl restart pveproxy
+fi
+elif [ "$cpucores" = 2 ]
+then 
+#双核cpu写入代码判断
+grep -q "CPU Thermal State" /usr/share/pve-manager/js/pvemanagerlib.js
+if [ $? -eq 0 ]; then
+    echo CPU为双核
+    echo CPU温度代码已存在无需更新 
+else
+    rm -rf CPU_Thermal_State
+    ping 127.0.0.1 -c 1 > /dev/null
+    wget -q --no-check-certificate https://raw.githubusercontent.com/pkpkgtr1/PVE-Fix/master/update/2CPU_Thermal_State2
+    chmod -R 0755 CPU_Thermal_State
+    sed -i -e '/pveversion/{n;d}' /usr/share/pve-manager/js/pvemanagerlib.js
+    ping 127.0.0.1 -c 1 > /dev/null
+    sed -i -e '/pveversion/{n;d}' /usr/share/pve-manager/js/pvemanagerlib.js
+    ping 127.0.0.1 -c 1 > /dev/null
+    sed -i.bak '/pveversion/r CPU_Thermal_State2' /usr/share/pve-manager/js/pvemanagerlib.js
+    echo cpu双核文件已更新   
+    echo 正在重启完毕
+    systemctl restart pveproxy
+fi
+elif [ "$cpucores" = 4 ]
+then 
+grep -q "CPU Thermal State" /usr/share/pve-manager/js/pvemanagerlib.js
+if [ $? -eq 0 ]; then
+    echo CPU为四核
+    echo CPU温度代码已存在无需更新 
+else
+    rm -rf CPU_Thermal_State
+    ping 127.0.0.1 -c 1 > /dev/null
+    wget -q --no-check-certificate https://raw.githubusercontent.com/pkpkgtr1/PVE-Fix/master/update/2CPU_Thermal_State4
+    chmod -R 0755 CPU_Thermal_State
+    sed -i -e '/pveversion/{n;d}' /usr/share/pve-manager/js/pvemanagerlib.js
+    ping 127.0.0.1 -c 1 > /dev/null
+    sed -i -e '/pveversion/{n;d}' /usr/share/pve-manager/js/pvemanagerlib.js
+    ping 127.0.0.1 -c 1 > /dev/null
+    sed -i.bak '/pveversion/r CPU_Thermal_State4' /usr/share/pve-manager/js/pvemanagerlib.js
+    echo cpu四核文件已更新   
+    echo 正在重启完毕
+    systemctl restart pveproxy
+fi
+else
+echo 您的cpu不在支持范围请联系作者
+fi
 
 
 #-----------------------------------------------------------------------------------
