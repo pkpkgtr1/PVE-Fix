@@ -155,6 +155,49 @@ else
     echo cpu四核文件已更新   
     echo 正在重启完毕
     systemctl restart pveproxy
+
+cat > /etc/systemd/system/rc-local.service <<EOF
+[Unit]
+Description=/etc/rc.local
+ConditionPathExists=/etc/rc.local
+[Service]
+Type=forking
+ExecStart=/etc/rc.local start
+TimeoutSec=0
+StandardOutput=tty
+RemainAfterExit=yes
+SysVStartPriority=99
+[Install]
+WantedBy=multi-user.target
+EOF
+
+cat > /etc/rc.local <<EOF
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+exit 0
+EOF
+
+chmod +x /etc/rc.local && systemctl enable rc-local && systemctl start rc-local.service
+
+sed -i '/^exit 0/,$d' /etc/rc.local
+cat >> /etc/rc.local <<EOF
+hddtemp -d /dev/sd?
+exit 0
+EOF
+
+/etc/rc.local
+
+
 fi
 else
 echo 您的cpu不在支持范围请联系作者
@@ -256,6 +299,47 @@ else
     echo 正在重启完毕
     systemctl restart pveproxy
 fi
+cat > /etc/systemd/system/rc-local.service <<EOF
+[Unit]
+Description=/etc/rc.local
+ConditionPathExists=/etc/rc.local
+[Service]
+Type=forking
+ExecStart=/etc/rc.local start
+TimeoutSec=0
+StandardOutput=tty
+RemainAfterExit=yes
+SysVStartPriority=99
+[Install]
+WantedBy=multi-user.target
+EOF
+
+cat > /etc/rc.local <<EOF
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+exit 0
+EOF
+
+chmod +x /etc/rc.local && systemctl enable rc-local && systemctl start rc-local.service
+
+sed -i '/^exit 0/,$d' /etc/rc.local
+cat >> /etc/rc.local <<EOF
+hddtemp -d /dev/sd?
+exit 0
+EOF
+
+/etc/rc.local
+
 else
 echo 您的cpu不在支持范围请联系作者
 fi
@@ -266,3 +350,4 @@ fi
 else
 echo 请输入正确的序号
 fi
+
