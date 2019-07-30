@@ -1,6 +1,18 @@
 		  value: ''
 },
    {
+       itemId: 'hddtemp',
+       colspan: 2,
+       printBar: false,
+       title: gettext('HDDTemp'),
+       textField: 'hddstat',
+       renderer:function(value){
+            const sda = value.match(/.sda\|[\w\s\-]*\|([\d]+)?/)[1];
+            const sdb = value.match(/.sdb\|[\w\s\-]*\|([\d]+)?/)[1];
+            return `sda: ${sda} ℃ | sdb: ${sdb}℃ `
+		}
+ },
+   {
 	itemId: 'thermal',
 	colspan: 2,
 	printBar: false,
