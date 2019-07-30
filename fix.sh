@@ -155,7 +155,6 @@ else
     echo cpu四核文件已更新   
     echo 正在重启完毕
     systemctl restart pveproxy
-
 cat > /etc/systemd/system/rc-local.service <<EOF
 [Unit]
 Description=/etc/rc.local
@@ -194,8 +193,6 @@ cat >> /etc/rc.local <<EOF
 hddtemp -d /dev/sd?
 exit 0
 EOF
-
-/etc/rc.local
 
 
 fi
@@ -298,8 +295,7 @@ else
     echo cpu四核文件已更新   
     echo 正在重启完毕
     systemctl restart pveproxy
-fi
-cat > /etc/systemd/system/rc-local.service <<EOF
+    cat > /etc/systemd/system/rc-local.service <<EOF
 [Unit]
 Description=/etc/rc.local
 ConditionPathExists=/etc/rc.local
@@ -337,8 +333,9 @@ cat >> /etc/rc.local <<EOF
 hddtemp -d /dev/sd?
 exit 0
 EOF
+fi
 
-/etc/rc.local
+
 
 else
 echo 您的cpu不在支持范围请联系作者
