@@ -113,6 +113,7 @@ else
     sed -i.bak '/pveversion/r CPU_Thermal_State' /usr/share/pve-manager/js/pvemanagerlib.js
     echo cpu单核文件已更新   
     echo 正在重启完毕
+    hddtemp /dev/sd?
     systemctl restart pveproxy
 fi
 elif [ "$cpucores" = 2 ]
@@ -123,10 +124,10 @@ if [ $? -eq 0 ]; then
     echo CPU为双核
     echo CPU温度代码已存在无需更新 
 else
-    rm -rf CPU_Thermal_State
+    rm -rf CPU_Thermal_State2
     ping 127.0.0.1 -c 1 > /dev/null
     wget -q --no-check-certificate https://raw.githubusercontent.com/pkpkgtr1/PVE-Fix/master/update/CPU_Thermal_State2
-    chmod -R 0755 CPU_Thermal_State
+    chmod -R 0755 CPU_Thermal_State2
     sed -i -e '/pveversion/{n;d}' /usr/share/pve-manager/js/pvemanagerlib.js
     ping 127.0.0.1 -c 1 > /dev/null
     sed -i -e '/pveversion/{n;d}' /usr/share/pve-manager/js/pvemanagerlib.js
@@ -134,6 +135,7 @@ else
     sed -i.bak '/pveversion/r CPU_Thermal_State2' /usr/share/pve-manager/js/pvemanagerlib.js
     echo cpu双核文件已更新   
     echo 正在重启完毕
+    hddtemp /dev/sd?
     systemctl restart pveproxy
 fi
 elif [ "$cpucores" = 4 ]
@@ -143,10 +145,10 @@ if [ $? -eq 0 ]; then
     echo CPU为四核
     echo CPU温度代码已存在无需更新 
 else
-    rm -rf CPU_Thermal_State
+    rm -rf CPU_Thermal_State4
     ping 127.0.0.1 -c 1 > /dev/null
     wget -q --no-check-certificate https://raw.githubusercontent.com/pkpkgtr1/PVE-Fix/master/update/CPU_Thermal_State4
-    chmod -R 0755 CPU_Thermal_State
+    chmod -R 0755 CPU_Thermal_State4
     sed -i -e '/pveversion/{n;d}' /usr/share/pve-manager/js/pvemanagerlib.js
     ping 127.0.0.1 -c 1 > /dev/null
     sed -i -e '/pveversion/{n;d}' /usr/share/pve-manager/js/pvemanagerlib.js
@@ -154,6 +156,7 @@ else
     sed -i.bak '/pveversion/r CPU_Thermal_State4' /usr/share/pve-manager/js/pvemanagerlib.js
     echo cpu四核文件已更新   
     echo 正在重启完毕
+    hddtemp /dev/sd?
     systemctl restart pveproxy
 fi
 else
@@ -202,17 +205,18 @@ if [ $? -eq 0 ]; then
     echo CPU为单核
     echo CPU温度代码已存在无需更新 
 else
-    rm -rf CPU_Thermal_State
+    rm -rf 2CPU_Thermal_State
     ping 127.0.0.1 -c 1 > /dev/null
     wget -q --no-check-certificate https://raw.githubusercontent.com/pkpkgtr1/PVE-Fix/master/update/2CPU_Thermal_State
-    chmod -R 0755 CPU_Thermal_State
+    chmod -R 0755 2CPU_Thermal_State
     sed -i -e '/pveversion/{n;d}' /usr/share/pve-manager/js/pvemanagerlib.js
     ping 127.0.0.1 -c 1 > /dev/null
     sed -i -e '/pveversion/{n;d}' /usr/share/pve-manager/js/pvemanagerlib.js
     ping 127.0.0.1 -c 1 > /dev/null
-    sed -i.bak '/pveversion/r CPU_Thermal_State' /usr/share/pve-manager/js/pvemanagerlib.js
+    sed -i.bak '/pveversion/r 2CPU_Thermal_State' /usr/share/pve-manager/js/pvemanagerlib.js
     echo cpu单核文件已更新   
     echo 正在重启完毕
+    hddtemp /dev/sd?
     systemctl restart pveproxy
 fi
 elif [ "$cpucores" = 2 ]
@@ -223,17 +227,18 @@ if [ $? -eq 0 ]; then
     echo CPU为双核
     echo CPU温度代码已存在无需更新 
 else
-    rm -rf CPU_Thermal_State
+    rm -rf 2CPU_Thermal_State2
     ping 127.0.0.1 -c 1 > /dev/null
     wget -q --no-check-certificate https://raw.githubusercontent.com/pkpkgtr1/PVE-Fix/master/update/2CPU_Thermal_State2
-    chmod -R 0755 CPU_Thermal_State
+    chmod -R 0755 2CPU_Thermal_State2
     sed -i -e '/pveversion/{n;d}' /usr/share/pve-manager/js/pvemanagerlib.js
     ping 127.0.0.1 -c 1 > /dev/null
     sed -i -e '/pveversion/{n;d}' /usr/share/pve-manager/js/pvemanagerlib.js
     ping 127.0.0.1 -c 1 > /dev/null
-    sed -i.bak '/pveversion/r CPU_Thermal_State2' /usr/share/pve-manager/js/pvemanagerlib.js
+    sed -i.bak '/pveversion/r 2CPU_Thermal_State2' /usr/share/pve-manager/js/pvemanagerlib.js
     echo cpu双核文件已更新   
     echo 正在重启完毕
+    hddtemp /dev/sd?
     systemctl restart pveproxy
 fi
 elif [ "$cpucores" = 4 ]
@@ -243,17 +248,18 @@ if [ $? -eq 0 ]; then
     echo CPU为四核
     echo CPU温度代码已存在无需更新 
 else
-    rm -rf CPU_Thermal_State
+    rm -rf 2CPU_Thermal_State4
     ping 127.0.0.1 -c 1 > /dev/null
     wget -q --no-check-certificate https://raw.githubusercontent.com/pkpkgtr1/PVE-Fix/master/update/2CPU_Thermal_State4
-    chmod -R 0755 CPU_Thermal_State
+    chmod -R 0755 2CPU_Thermal_State4
     sed -i -e '/pveversion/{n;d}' /usr/share/pve-manager/js/pvemanagerlib.js
     ping 127.0.0.1 -c 1 > /dev/null
     sed -i -e '/pveversion/{n;d}' /usr/share/pve-manager/js/pvemanagerlib.js
     ping 127.0.0.1 -c 1 > /dev/null
-    sed -i.bak '/pveversion/r CPU_Thermal_State4' /usr/share/pve-manager/js/pvemanagerlib.js
+    sed -i.bak '/pveversion/r 2CPU_Thermal_State4' /usr/share/pve-manager/js/pvemanagerlib.js
     echo cpu四核文件已更新   
     echo 正在重启完毕
+    hddtemp /dev/sd?
     systemctl restart pveproxy
 fi
 
